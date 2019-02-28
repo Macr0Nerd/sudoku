@@ -9,6 +9,7 @@
 
 class board {
 public:
+    std::vector<std::vector<std::vector<int> > > b;
     board() : b (9, std::vector< std::vector<int> >(9, std::vector<int>(9, 1))){
         for (int i = 0; i< 9; ++i){
             for (int j = 0; j < 9; ++j){
@@ -19,8 +20,13 @@ public:
         }
     }
 
+    int update(int *move);
+    void printPretty();
+
 private:
-    std::vector<std::vector<std::vector<int> > > b;
+    int numsPlaced = 0;
+    int isValid(int x, int y, int val);
+    void removeIfExists(int x, int y, int val);
 };
 
 
