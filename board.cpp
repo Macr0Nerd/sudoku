@@ -6,12 +6,48 @@
 #include <iostream>
 #include <algorithm>
 #include <iterator>
-#include <stack>
 #include <vector>
 #include <typeinfo>
 using std::cout;
 using std::cin;
 using std::endl;
+
+int board::failTest() {
+    for (int i = 0; i < 9; ++i) {
+        for (int j = 0; j < 9; ++j) {
+            if (b[i][j].empty()) {
+                return 0;
+            }
+        }
+    }
+
+    return 1;
+}
+
+std::vector<int> board::findMostConstrained() {
+    std::vector<int> cell = {0, 0};
+    long val = 9;
+
+    for (int i = 0; i < 9; ++i) {
+        for (int j = 0; j < 9; ++j) {
+            if (b[i][j].size() < val && b[i][j].size() > 1) {
+                val = b[i][j].size();
+                cell[0] = i;
+                cell[1] = j;
+            }
+        }
+    }
+
+    return cell;
+}
+
+int board::goalTest() {
+    if (numsPlaced == 81){
+        return 1;
+    } else {
+        return 0;
+    }
+}
 
 int board::isValid(int x, int y, int val){
     for (int i = 0; i < 9; ++i) {
@@ -96,10 +132,8 @@ int board::update(int *move) {
         removeIfExists(move[0], move[1], move[2]);
         b[move[0]][move[1]].assign(1, move[2]);
         ++numsPlaced;
-        cout << "Move completed" << endl;
         return 0;
     } else {
-        cout << "Move could not be done" << endl;
         return 1;
     }
 }

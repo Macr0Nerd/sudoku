@@ -20,11 +20,14 @@ public:
         }
     }
 
-    int update(int *move);
+    int failTest();
+    int goalTest();
     void printPretty();
+    int update(int *move);
 
 private:
     int numsPlaced = 0;
+    std::vector<int> findMostConstrained();
     int isValid(int x, int y, int val);
     void removeIfExists(int x, int y, int val);
 };
