@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iterator>
 #include <vector>
+#include <array>
 #include <typeinfo>
 using std::cout;
 using std::cin;
@@ -127,7 +128,7 @@ void board::removeIfExists(int x, int y, int val) {
     }
 }
 
-int board::update(int *move) {
+int board::update(std::array<int, 3> move) {
     if(isValid(move[0], move[1], move[2])) {
         removeIfExists(move[0], move[1], move[2]);
         b[move[0]][move[1]].assign(1, move[2]);

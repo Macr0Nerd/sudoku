@@ -6,6 +6,7 @@
 #define SUDOKU_BOARD_H
 
 #include <vector>
+#include <array>
 
 class board {
 public:
@@ -23,7 +24,7 @@ public:
     int failTest();
     int goalTest();
     void printPretty();
-    int update(int *move);
+    int update(std::array<int, 3> move);
 
 private:
     int numsPlaced = 0;
