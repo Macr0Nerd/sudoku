@@ -6,4 +6,7 @@
 #include <iostream>
 #include <algorithm>
 #include <stack>
-using namespace std;
+#include <vector>
+using std::cout;
+using std::cin;
+using std::endl;
