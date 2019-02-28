@@ -11,7 +11,7 @@
 class board {
 public:
     std::vector<std::vector<std::vector<int> > > b;
-    board() : b (9, std::vector< std::vector<int> >(9, std::vector<int>(9, 1))){
+    board() : b (9, std::vector<std::vector<int> >(9, std::vector<int>(9, 1))){
         for (int i = 0; i< 9; ++i){
             for (int j = 0; j < 9; ++j){
                 for (int k = 0; k < 9; ++k) {
@@ -21,14 +21,17 @@ public:
         }
     }
 
+    ~board(){
+        b.clear();
+    }
+
     int failTest();
+    std::vector<int> findMostConstrained();
     int goalTest();
     void printPretty();
     int update(std::array<int, 3> move);
 
 private:
-    int numsPlaced = 0;
-    std::vector<int> findMostConstrained();
     int isValid(int x, int y, int val);
     void removeIfExists(int x, int y, int val);
 };

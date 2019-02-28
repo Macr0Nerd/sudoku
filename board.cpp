@@ -43,11 +43,15 @@ std::vector<int> board::findMostConstrained() {
 }
 
 int board::goalTest() {
-    if (numsPlaced == 81){
-        return 1;
-    } else {
-        return 0;
+    for (int i = 0; i < 9; ++i) {
+        for (int j = 0; j < 9; ++j) {
+            if (b[i][j].size() != 1) {
+                return 0;
+            }
+        }
     }
+
+    return 1;
 }
 
 int board::isValid(int x, int y, int val){
@@ -132,7 +136,8 @@ int board::update(std::array<int, 3> move) {
     if(isValid(move[0], move[1], move[2])) {
         removeIfExists(move[0], move[1], move[2]);
         b[move[0]][move[1]].assign(1, move[2]);
-        ++numsPlaced;
+        printPretty();
+        cout << endl;
         return 0;
     } else {
         return 1;

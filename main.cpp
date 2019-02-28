@@ -1,9 +1,12 @@
 #include "board.h"
 #include <iostream>
 #include <array>
+#include <stack>
 using std::cout;
 using std::cin;
 using std::endl;
+
+void DFS(board state);
 
 int main() {
     board board1;
@@ -21,5 +24,43 @@ int main() {
 
     board1.printPretty();
 
+    DFS(board1);
+
     return 0;
+}
+
+void DFS(board state){
+    std::stack <std::vector<std::vector<std::vector<int> > > > stck;
+    stck.push(state.b);
+
+    board copy;
+
+    while (!stck.empty()) {
+        int x = 0;
+
+        std::vector<int> cons = state.findMostConstrained();
+
+        if (state.b[cons[0]][cons[1]].size() > 1) {
+            for (int i = 0; i < state.b[cons[0]][cons[1]].size(); ++i) {
+                ++x;
+
+                copy.b = state.b;
+                std::array<int, 3> move = {cons[0], cons[1], copy.b[cons[0]][cons[1]][i]};
+                copy.update(move);
+                stck.push(copy.b);
+            }
+        } else {
+            state.b = stck.top();
+            stck.pop();
+        }
+
+        if (x > 0){
+            state.b = stck.top();
+            stck.pop();
+        }
+
+        if (state.goalTest()){
+            break;
+        }
+    }
 }
