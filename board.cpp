@@ -17,12 +17,12 @@ int board::failTest() {
     for (int i = 0; i < 9; ++i) {
         for (int j = 0; j < 9; ++j) {
             if (b[i][j].empty()) {
-                return 0;
+                return 1;
             }
         }
     }
 
-    return 1;
+    return 0;
 }
 
 std::vector<int> board::findMostConstrained() {
@@ -98,6 +98,7 @@ void board::printPretty() {
             cout << "----------------------" << endl;
         }
     }
+    cout << endl;
 }
 
 void board::removeIfExists(int x, int y, int val) {
@@ -136,10 +137,9 @@ int board::update(std::array<int, 3> move) {
     if(isValid(move[0], move[1], move[2])) {
         removeIfExists(move[0], move[1], move[2]);
         b[move[0]][move[1]].assign(1, move[2]);
-        printPretty();
-        cout << endl;
-        return 0;
-    } else {
+        ++attempts;
         return 1;
+    } else {
+        return 0;
     }
 }

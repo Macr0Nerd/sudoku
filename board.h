@@ -32,6 +32,7 @@ public:
     int update(std::array<int, 3> move);
 
 private:
+    int attempts = 0;
     int isValid(int x, int y, int val);
     void removeIfExists(int x, int y, int val);
 };
