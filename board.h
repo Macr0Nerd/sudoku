@@ -8,10 +8,12 @@
 #include <vector>
 #include <array>
 
-class board {
+class Board {
 public:
     std::vector<std::vector<std::vector<int> > > b;
-    board() : b (9, std::vector<std::vector<int> >(9, std::vector<int>(9, 1))){
+    std::vector<std::vector<int> > c;
+    int numsPlaced = 0;
+    Board() : b (9, std::vector<std::vector<int> >(9, std::vector<int>(9, 1))) {
         for (int i = 0; i< 9; ++i){
             for (int j = 0; j < 9; ++j){
                 for (int k = 0; k < 9; ++k) {
@@ -19,15 +21,31 @@ public:
                 }
             }
         }
+
+        c.assign(9, std::vector<int> (9, 0));
+        attempts = 0;
+        numsPlaced = 0;
     }
 
-    ~board(){
+    ~Board(){
         b.clear();
+        c.clear();
+    }
+
+    Board operator=(Board &d){
+        Board board;
+
+        board.b = d.b;
+        board.c = d.c;
+        board.numsPlaced = d.numsPlaced;
+
+        return board;
     }
 
     int failTest();
     std::vector<int> findMostConstrained();
     int goalTest();
+    int isOccupied(int x, int y);
     void printPretty();
     int update(std::array<int, 3> move);
 

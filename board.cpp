@@ -13,11 +13,46 @@ using std::cout;
 using std::cin;
 using std::endl;
 
-int board::failTest() {
+int Board::failTest() {
+    std::vector<int> row;
+    std::vector<int> col;
+    std::vector<int> sub;
+
     for (int i = 0; i < 9; ++i) {
+        row.clear(); col.clear();
+        row.assign(9, 0); col.assign(9, 0);
+
         for (int j = 0; j < 9; ++j) {
-            if (b[i][j].empty()) {
+            if(std::find(row.begin(), row.end(), c[j][i]) != row.end()) {
                 return 1;
+            } else {
+                row[j] = c[j][i];
+            }
+
+            if(std::find(col.begin(), col.end(), c[i][j]) != col.end()){
+                return 1;
+            } else {
+                col[j] = c[i][j];
+            }
+        }
+    }
+
+    for (int k = 0; k < 3; ++k) {
+        for (int i = 0; i < 3; ++i) {
+            sub.clear();
+            sub.assign(9, 0);
+            int z = 0;
+
+            for (int j = 0; j < 3; ++j) {
+                for (int l = 0; l < 3; ++l) {
+                    if(std::find(sub.begin(), sub.end(), c[k * 3 + j][i * 3 + l]) != sub.end()){
+                        return 1;
+                    } else {
+                        sub[z] = c[k * 3 + j][i * 3 + l];
+                    }
+
+                    ++z;
+                }
             }
         }
     }
@@ -25,7 +60,7 @@ int board::failTest() {
     return 0;
 }
 
-std::vector<int> board::findMostConstrained() {
+std::vector<int> Board::findMostConstrained() {
     std::vector<int> cell = {0, 0};
     long val = 9;
 
@@ -42,19 +77,23 @@ std::vector<int> board::findMostConstrained() {
     return cell;
 }
 
-int board::goalTest() {
-    for (int i = 0; i < 9; ++i) {
-        for (int j = 0; j < 9; ++j) {
-            if (b[i][j].size() != 1) {
-                return 0;
-            }
-        }
+int Board::goalTest() {
+    if (numsPlaced == 81) {
+        return 1;
+    } else {
+        return 0;
     }
-
-    return 1;
 }
 
-int board::isValid(int x, int y, int val){
+int Board::isOccupied(int x, int y) {
+    if(c[x][y] != 0){
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+int Board::isValid(int x, int y, int val){
     for (int i = 0; i < 9; ++i) {
         if(b[x][i].size() == 1 && b[x][i][0] == val){
             return 0;
@@ -79,13 +118,15 @@ int board::isValid(int x, int y, int val){
     return 1;
 }
 
-void board::printPretty() {
+void Board::printPretty() {
+    cout << numsPlaced << endl;
+
     for (int i = 0; i < 9; ++i){
         for (int j = 0; j < 9; ++j){
-            if (b[i][j].size() > 1){
+            if (c[i][j] == 0){
                 cout << "# ";
             } else {
-                cout << b[i][j][0] << " ";
+                cout << c[i][j] << " ";
             }
 
             if (j == 2 || j == 5){
@@ -101,7 +142,7 @@ void board::printPretty() {
     cout << endl;
 }
 
-void board::removeIfExists(int x, int y, int val) {
+void Board::removeIfExists(int x, int y, int val) {
     for (int i = 0; i < 9; ++i) {
         auto xInd = std::find(std::begin(b[x][i]), std::end(b[x][i]), val);
         if(typeid(b[x][i]) != typeid(int)) {
@@ -133,13 +174,9 @@ void board::removeIfExists(int x, int y, int val) {
     }
 }
 
-int board::update(std::array<int, 3> move) {
-    if(isValid(move[0], move[1], move[2])) {
-        removeIfExists(move[0], move[1], move[2]);
-        b[move[0]][move[1]].assign(1, move[2]);
-        ++attempts;
-        return 1;
-    } else {
-        return 0;
-    }
+int Board::update(std::array<int, 3> move) {
+    c[move[0]][move[1]] = move[2];
+    ++attempts;
+    ++numsPlaced;
+    return 1;
 }
