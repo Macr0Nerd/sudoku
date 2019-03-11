@@ -13,6 +13,15 @@ using std::cout;
 using std::cin;
 using std::endl;
 
+Board& Board::operator= (const Board& d){
+    Board board;
+
+    this->c = d.c;
+    this->numsPlaced = d.numsPlaced;
+
+    return *this;
+}
+
 int Board::failTest() {
     std::vector<int> row;
     std::vector<int> col;
@@ -20,18 +29,18 @@ int Board::failTest() {
 
     for (int i = 0; i < 9; ++i) {
         row.clear(); col.clear();
-        row.assign(9, 0); col.assign(9, 0);
+        row.assign(9, -1); col.assign(9, -1);
 
         for (int j = 0; j < 9; ++j) {
             if(std::find(row.begin(), row.end(), c[j][i]) != row.end()) {
                 return 1;
-            } else {
+            } else if (c[j][i] != 0) {
                 row[j] = c[j][i];
             }
 
             if(std::find(col.begin(), col.end(), c[i][j]) != col.end()){
                 return 1;
-            } else {
+            } else if (c[i][j] != 0) {
                 col[j] = c[i][j];
             }
         }
@@ -40,14 +49,14 @@ int Board::failTest() {
     for (int k = 0; k < 3; ++k) {
         for (int i = 0; i < 3; ++i) {
             sub.clear();
-            sub.assign(9, 0);
+            sub.assign(9, -1);
             int z = 0;
 
             for (int j = 0; j < 3; ++j) {
                 for (int l = 0; l < 3; ++l) {
                     if(std::find(sub.begin(), sub.end(), c[k * 3 + j][i * 3 + l]) != sub.end()){
                         return 1;
-                    } else {
+                    } else if (c[k * 3 + j][i * 3 + l]) {
                         sub[z] = c[k * 3 + j][i * 3 + l];
                     }
 
@@ -60,25 +69,8 @@ int Board::failTest() {
     return 0;
 }
 
-std::vector<int> Board::findMostConstrained() {
-    std::vector<int> cell = {0, 0};
-    long val = 9;
-
-    for (int i = 0; i < 9; ++i) {
-        for (int j = 0; j < 9; ++j) {
-            if (b[i][j].size() < val && b[i][j].size() > 1) {
-                val = b[i][j].size();
-                cell[0] = i;
-                cell[1] = j;
-            }
-        }
-    }
-
-    return cell;
-}
-
 int Board::goalTest() {
-    if (numsPlaced == 81) {
+    if (numsPlaced == 81 && !failTest()) {
         return 1;
     } else {
         return 0;
@@ -91,31 +83,6 @@ int Board::isOccupied(int x, int y) {
     } else {
         return 0;
     }
-}
-
-int Board::isValid(int x, int y, int val){
-    for (int i = 0; i < 9; ++i) {
-        if(b[x][i].size() == 1 && b[x][i][0] == val){
-            return 0;
-        }
-
-        if(b[i][y].size() == 1 && b[i][y][0] == val) {
-            return 0;
-        }
-    }
-
-    int subX = x - (x % 3);
-    int subY = y - (y % 3);
-
-    for (int j = subX; j < subX + 3; ++j) {
-        for (int i = subY; i < subY + 3; ++i) {
-            if(b[j][i].size() == 1 && b[j][i][0] == val) {
-                return 0;
-            }
-        }
-    }
-
-    return 1;
 }
 
 void Board::printPretty() {
@@ -140,38 +107,6 @@ void Board::printPretty() {
         }
     }
     cout << endl;
-}
-
-void Board::removeIfExists(int x, int y, int val) {
-    for (int i = 0; i < 9; ++i) {
-        auto xInd = std::find(std::begin(b[x][i]), std::end(b[x][i]), val);
-        if(typeid(b[x][i]) != typeid(int)) {
-            if (xInd != end(b[x][i]) && b[x][i].size() > 1) {
-                b[x][i].erase(xInd);
-            }
-        }
-
-        auto yInd = std::find(std::begin(b[i][y]), std::end(b[i][y]), val);
-        if(typeid(b[i][y]) != typeid(int)) {
-            if(yInd != end(b[i][y]) && b[i][y].size() > 1) {
-                b[i][y].erase(yInd);
-            }
-        }
-    }
-
-    int subX = x - (x % 3);
-    int subY = y - (y % 3);
-
-    for (int j = subX; j < subX + 3; ++j) {
-        for (int i = subY; i < subY + 3; ++i) {
-            auto subInd = std::find(std::begin(b[j][i]), std::end(b[j][i]), val);
-            if(typeid(b[j][i]) != typeid(int)) {
-                if (subInd != end(b[j][i]) && b[j][i].size() > 1) {
-                    b[j][i].erase(subInd);
-                }
-            }
-        }
-    }
 }
 
 int Board::update(std::array<int, 3> move) {
