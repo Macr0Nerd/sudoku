@@ -53,5 +53,7 @@ int main() {
         }
     }
 
+    cout << "You win!" << endl;
+
     return 0;
 }
