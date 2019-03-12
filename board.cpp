@@ -16,7 +16,6 @@ using std::endl;
 Board& Board::operator= (const Board& d){
     Board board;
 
-    this->b = d.b;
     this->c = d.c;
     this->numsPlaced = d.numsPlaced;
 
@@ -70,23 +69,6 @@ int Board::failTest() {
     return 0;
 }
 
-std::array<int, 2> Board::findMostConstrained() {
-    std::array<int, 2> cell = {0, 0};
-    long size = 9;
-
-    for (int i = 0; i < 9; ++i) {
-        for (int j = 0; j < 9; ++j) {
-            if (b[i][j].size() < size && !isOccupied(i, j)){
-                size = b[i][j].size();
-
-                cell[0] = i; cell[1] = j;
-            }
-        }
-    }
-
-    return cell;
-}
-
 int Board::goalTest() {
     if (numsPlaced == 81 && !failTest()) {
         return 1;
@@ -101,6 +83,34 @@ int Board::isOccupied(int x, int y) {
     } else {
         return 0;
     }
+}
+
+int Board::isValid(int x, int y, int move) {
+    std::vector<int> row (9, -1);
+    std::vector<int> col (9, -1);
+    std::vector<int> sub (9, -1);
+
+    for (int i = 0; i < 9; ++i) {
+        row[i] = c[x][i];
+        col[i] = c[i][y];
+    }
+
+    int subX = x - (x % 3);
+    int subY = y - (y % 3);
+    int z = 0;
+
+    for (int j = 0; j < 3; ++j) {
+        for (int k = 0; k < 3; ++k) {
+            sub[z] = c[subX + j][subY + k];
+            ++z;
+        }
+    }
+
+    if (std::find(row.begin(), row.end(), move) != row.end() || std::find(col.begin(), col.end(), move) != col.end() || std::find(sub.begin(), sub.end(), move) != sub.end()){
+        return 0;
+    }
+
+    return 1;
 }
 
 void Board::printPretty() {
@@ -128,9 +138,12 @@ void Board::printPretty() {
 }
 
 int Board::update(std::array<int, 3> move) {
-    c[move[0]][move[1]] = move[2];
-    b[move[0]][move[1]][0] = move[2];
-    ++attempts;
-    ++numsPlaced;
-    return 1;
+    if (isValid(move[0], move[1], move[2])) {
+        c[move[0]][move[1]] = move[2];
+        ++attempts;
+        ++numsPlaced;
+        return 1;
+    } else {
+        return 0;
+    }
 }

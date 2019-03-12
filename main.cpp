@@ -1,5 +1,6 @@
 #include "board.h"
 #include <iostream>
+#include <string>
 #include <array>
 #include <stack>
 using std::cout;
@@ -26,6 +27,31 @@ int main() {
     }
 
     board1.printPretty();
+
+    std::array<int, 3> move = {0, 0, -1};
+
+    while (!board1.goalTest()){
+        std::string row;std::string col; std::string num;
+        cout << "Enter row index: ";
+        getline(cin, row);
+        cout << "Enter column index: ";
+        getline(cin, col);
+        cout << "Enter your answer: ";
+        getline(cin, num);
+
+        move[0] = std::stoi(row);
+        move[1] = std::stoi(col);
+        move[2] = std::stoi(num);
+
+        board1.update(move);
+
+        board1.printPretty();
+
+        if(board1.failTest()){
+            cout << "You failed..." << endl;
+            return 1;
+        }
+    }
 
     return 0;
 }
