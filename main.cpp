@@ -38,6 +38,7 @@ int main() {
         getline(cin, col);
         cout << "Enter your answer: ";
         getline(cin, num);
+        cout << endl;
 
         move[0] = std::stoi(row) - 1;
         move[1] = std::stoi(col) - 1;
