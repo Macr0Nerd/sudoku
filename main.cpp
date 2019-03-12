@@ -6,9 +6,6 @@ using std::cout;
 using std::cin;
 using std::endl;
 
-void DFS(Board state);
-void bruteForce(Board state);
-
 int main() {
     Board board1;
 
@@ -29,83 +26,6 @@ int main() {
     }
 
     board1.printPretty();
-    DFS(board1);
 
     return 0;
-}
-
-void bruteForce(Board state) {
-    std::stack<Board> stack;
-    stack.push(state);
-
-    Board copy;
-    int z = 0;
-
-    for (int i = 0; i < 9; ++i) {
-        for (int j = 0; j < 9; ++j) {
-            for (int k = 0; k < 9; ++k) {
-                if (!state.isOccupied(i, j)) {
-                    copy = state;
-                    std::array<int, 3> move = {i, j, k + 1};
-                    copy.update(move);
-                    stack.push(copy);
-                }
-            }
-        }
-    }
-
-    while (!stack.empty()) {
-        state = stack.top();
-        stack.pop();
-
-        if(state.failTest()){
-            state = stack.top();
-            stack.pop();
-        }
-
-        state.printPretty();
-
-        if(state.goalTest()){
-            break;
-        }
-    }
-}
-
-void DFS(Board state) {
-    std::stack <Board> stack;
-    stack.push(state);
-
-    Board copy;
-
-    while (!stack.empty()) {
-        int x = 0;
-
-        std::array<int, 2> cons = state.findMostConstrained();
-
-        if (!state.failTest()) {
-            for (int i = 0; i < state.b[cons[0]][cons[1]].size(); ++i) {
-                copy = state;
-                std::array<int, 3> move = {cons[0], cons[1], copy.b[cons[0]][cons[1]][i]};
-                int safe = copy.update(move);
-
-                if (safe) stack.push(copy);
-
-                ++x;
-            }
-        } else {
-            state = stack.top();
-            stack.pop();
-        }
-
-        if (x){
-            state = stack.top();
-            stack.pop();
-        }
-
-        state.printPretty();
-
-        if (state.goalTest()){
-            break;
-        }
-    }
 }

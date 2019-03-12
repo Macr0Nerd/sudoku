@@ -16,6 +16,7 @@ using std::endl;
 Board& Board::operator= (const Board& d){
     Board board;
 
+    this->b = d.b;
     this->c = d.c;
     this->numsPlaced = d.numsPlaced;
 
