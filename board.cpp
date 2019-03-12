@@ -69,6 +69,23 @@ int Board::failTest() {
     return 0;
 }
 
+std::array<int, 2> Board::findMostConstrained() {
+    std::array<int, 2> cell = {0, 0};
+    long size = 9;
+
+    for (int i = 0; i < 9; ++i) {
+        for (int j = 0; j < 9; ++j) {
+            if (b[i][j].size() < size && !isOccupied(i, j)){
+                size = b[i][j].size();
+
+                cell[0] = i; cell[1] = j;
+            }
+        }
+    }
+
+    return cell;
+}
+
 int Board::goalTest() {
     if (numsPlaced == 81 && !failTest()) {
         return 1;
@@ -111,6 +128,7 @@ void Board::printPretty() {
 
 int Board::update(std::array<int, 3> move) {
     c[move[0]][move[1]] = move[2];
+    b[move[0]][move[1]][0] = move[2];
     ++attempts;
     ++numsPlaced;
     return 1;

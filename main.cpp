@@ -6,6 +6,7 @@ using std::cout;
 using std::cin;
 using std::endl;
 
+void DFS(Board state);
 void bruteForce(Board state);
 
 int main() {
@@ -28,7 +29,7 @@ int main() {
     }
 
     board1.printPretty();
-    bruteForce(board1);
+    DFS(board1);
 
     return 0;
 }
@@ -65,6 +66,45 @@ void bruteForce(Board state) {
         state.printPretty();
 
         if(state.goalTest()){
+            break;
+        }
+    }
+}
+
+void DFS(Board state) {
+    std::stack <Board> stack;
+    stack.push(state);
+
+    Board copy;
+
+    while (!stack.empty()) {
+        int x = 0;
+
+        std::array<int, 2> cons = state.findMostConstrained();
+
+        if (!state.failTest()) {
+            for (int i = 0; i < state.b[cons[0]][cons[1]].size(); ++i) {
+                copy = state;
+                std::array<int, 3> move = {cons[0], cons[1], copy.b[cons[0]][cons[1]][i]};
+                int safe = copy.update(move);
+
+                if (safe) stack.push(copy);
+
+                ++x;
+            }
+        } else {
+            state = stack.top();
+            stack.pop();
+        }
+
+        if (x){
+            state = stack.top();
+            stack.pop();
+        }
+
+        state.printPretty();
+
+        if (state.goalTest()){
             break;
         }
     }
