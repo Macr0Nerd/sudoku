@@ -141,7 +141,7 @@ void Board::printPretty() {
 }
 
 int Board::update(std::array<int, 3> move) {
-    if (isValid(move[0], move[1], move[2])) {
+    if (isValid(move[0], move[1], move[2]) && !isOccupied(move[0], move[1])) {
         c[move[0]][move[1]] = move[2];
         ++attempts;
         ++numsPlaced;
