@@ -141,7 +141,11 @@ void Board::printPretty() {
 }
 
 int Board::update(std::array<int, 3> move) {
-    if (isValid(move[0], move[1], move[2]) && !isOccupied(move[0], move[1])) {
+    if (move[0] > 8 || move[0] < 0 || move[1] > 8 || move[1] < 0 || move[2] > 9 || move[2] < 1){
+        cout << "Enter answers between 1-9" << endl;
+        cout << endl;
+        return 0;
+    } else if (isValid(move[0], move[1], move[2]) && !isOccupied(move[0], move[1])) {
         c[move[0]][move[1]] = move[2];
         ++attempts;
         ++numsPlaced;
