@@ -114,9 +114,12 @@ int Board::isValid(int x, int y, int move) {
 }
 
 void Board::printPretty() {
-    cout << numsPlaced << endl;
+    cout << "    1 2 3   4 5 6   7 8 9" << endl;
+    cout << "  -----------------------" << endl;
 
     for (int i = 0; i < 9; ++i){
+        cout << i + 1 << " | ";
+
         for (int j = 0; j < 9; ++j){
             if (c[i][j] == 0){
                 cout << "# ";
@@ -131,7 +134,7 @@ void Board::printPretty() {
         cout << endl;
 
         if (i == 2 || i == 5){
-            cout << "----------------------" << endl;
+            cout << "   ----------------------" << endl;
         }
     }
     cout << endl;

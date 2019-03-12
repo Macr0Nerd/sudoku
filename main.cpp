@@ -39,8 +39,8 @@ int main() {
         cout << "Enter your answer: ";
         getline(cin, num);
 
-        move[0] = std::stoi(row);
-        move[1] = std::stoi(col);
+        move[0] = std::stoi(row) - 1;
+        move[1] = std::stoi(col) - 1;
         move[2] = std::stoi(num);
 
         board1.update(move);
