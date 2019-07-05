@@ -1,13 +1,23 @@
+#pragma once
+
 #include "board.h"
 #include <iostream>
 #include <string>
 #include <array>
 #include <stack>
+#include <exception>
+
 using std::cout;
 using std::cin;
 using std::endl;
 
 int main() {
+    std::vector<std::string> a = {"123456789", "123456789"};
+
+    if (std::find(a.begin(), a.end(), "3") != a.end()) {
+        cout << "Wait, it matched!" << endl;
+    }
+
     Board board1;
 
     std::array<std::array<int, 3>, 34> easy = {{{0, 1, 3}, {0, 3, 2}, {1, 1, 6}, {1, 2, 4}, {1, 5, 8}, {1, 8, 7},
@@ -28,6 +38,7 @@ int main() {
 
     board1.printPretty();
 
+
     std::array<int, 3> move = {0, 0, -1};
 
     while (!board1.goalTest()){
@@ -40,9 +51,14 @@ int main() {
         getline(cin, num);
         cout << endl;
 
-        move[0] = std::stoi(row) - 1;
-        move[1] = std::stoi(col) - 1;
-        move[2] = std::stoi(num);
+        try {
+            move[0] = std::stoi(row) - 1;
+            move[1] = std::stoi(col) - 1;
+            move[2] = std::stoi(num);
+        } catch (std::exception& n) {
+            board1.printPretty();
+            continue;
+        }
 
         board1.update(move);
 
@@ -55,6 +71,8 @@ int main() {
     }
 
     cout << "You win!" << endl;
+
+
 
     return 0;
 }
