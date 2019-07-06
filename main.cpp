@@ -11,13 +11,9 @@ using std::cout;
 using std::cin;
 using std::endl;
 
+Board& dfs(const Board& d);
+
 int main() {
-    std::vector<std::string> a = {"123456789", "123456789"};
-
-    if (std::find(a.begin(), a.end(), "3") != a.end()) {
-        cout << "Wait, it matched!" << endl;
-    }
-
     Board board1;
 
     std::array<std::array<int, 3>, 34> easy = {{{0, 1, 3}, {0, 3, 2}, {1, 1, 6}, {1, 2, 4}, {1, 5, 8}, {1, 8, 7},
@@ -32,13 +28,13 @@ int main() {
                                                    {5, 7, 3}, {6, 2, 1}, {6, 7, 6}, {6, 8, 8}, {7, 2, 8}, {7, 3, 5},
                                                    {7, 7, 1}, {8, 1, 9}, {8, 6, 4}}};
 
-    for (auto i : easy) {
+    for (auto i : hardest) {
         board1.update(i);
     }
 
     board1.printPretty();
 
-
+    /* Uncomment to play
     std::array<int, 3> move = {0, 0, -1};
 
     while (!board1.goalTest()){
@@ -71,8 +67,66 @@ int main() {
     }
 
     cout << "You win!" << endl;
+     */
 
+    dfs(board1);
 
 
     return 0;
+}
+
+
+Board& dfs(const Board& d) {
+    Board state;
+    Board newState;
+    state = d;
+
+    std::stack<Board> stack;
+    stack.push(state);
+    int counter = 0;
+    int x;
+
+    while (!stack.empty()) {
+        x = 0;
+        ++counter;
+
+        std::array<int, 2> cons = state.findMostConstrained();
+
+        cout << counter << endl;
+        cout << state.numsPlaced << endl;
+        cout << "(" << cons[0] + 1 << "," << cons[1] + 1 << ")" << endl;
+        cout << state.c[cons[0]][cons[1]] << endl;
+
+        if (state.c[cons[0]][cons[1]].size() == 2){
+            std::array<int, 3> move = {cons[0], cons[1], state.c[cons[0]][cons[1]][0] - '0'};
+            state.update(move);
+        } else if (state.c[cons[0]][cons[1]].size() > 1) {
+            for (int i = 0; i < state.c[cons[0]][cons[1]].size() - 1; ++i) {
+                ++x;
+                char mo =  state.c[cons[0]][cons[1]][i];
+
+                newState = state;
+                std::array<int, 3> move = {cons[0], cons[1], mo - '0'};
+                if (newState.update(move))
+                    stack.push(newState);
+            }
+        } else {
+            state = stack.top();
+            stack.pop();
+        }
+
+        if (x) {
+            state = stack.top();
+            stack.pop();
+        }
+
+        cout << state.c[cons[0]][cons[1]] << endl;
+        state.printPretty();
+
+        if (state.goalTest()){
+            break;
+        }
+    }
+
+    return state;
 }

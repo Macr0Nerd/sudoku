@@ -6,6 +6,7 @@
 #include <vector>
 #include <array>
 #include <typeinfo>
+#include <string>
 
 using std::cout;
 using std::cin;
@@ -17,7 +18,7 @@ public:
     int numsPlaced = 0;
 
     Board() {
-        c.assign(9, std::vector<std::string> (9, "123456789"));
+        c.assign(9, std::vector<std::string> (9, "123456789#"));
         numsPlaced = 0;
     }
 
@@ -45,11 +46,15 @@ public:
             for (int j = 0; j < 9; ++j) {
                 if (std::find(row.begin(), row.end(), c[j][i]) != row.end()) {
                     return 1;
+                } else if (c[j][i] == "#") {
+                    return 1;
                 } else if (c[j][i].size() == 1) {
                     row[j] += c[j][i];
                 }
 
                 if (std::find(col.begin(), col.end(), c[i][j]) != col.end()) {
+                    return 1;
+                } else if (c[i][j] == "#") {
                     return 1;
                 } else if (c[i][j].size() == 1) {
                     col[j] = c[i][j];
@@ -67,6 +72,8 @@ public:
                     for (int l = 0; l < 3; ++l) {
                         if(std::find(sub.begin(), sub.end(), c[k * 3 + j][i * 3 + l]) != sub.end()){
                             return 1;
+                        } else if (c[k * 3 + j][i * 3 + l] == "#") {
+                            return 1;
                         } else if (c[k * 3 + j][i * 3 + l].size() == 1) {
                             sub[z] += c[k * 3 + j][i * 3 + l];
                         }
@@ -78,6 +85,24 @@ public:
         }
 
         return 0;
+    }
+
+    std::array<int, 2> findMostConstrained() {
+        std::array<int, 2> cell = {0, 0};
+        long size = 9;
+
+        for (int i = 0; i < 9; ++i) {
+            for (int j = 0; j < 9; ++j) {
+                if (c[i][j].size() < size && !isOccupied(i, j)){
+                    size = c[i][j].size();
+                    cell[0] = i ; cell[1] = j;
+                }
+            }
+        }
+
+        //++cell[0]; ++cell[1];
+
+        return cell;
     }
 
     int goalTest() {
@@ -170,7 +195,28 @@ public:
             cout << endl;
             return 0;
         } else if (isValid(move[0], move[1], std::to_string(move[2]))) {
+            char num = std::to_string(move[2])[0];
+
+            for (int i = 0; i < 9; ++i) {
+                std::string& row = c[move[0]][i];
+                std::string& col = c[i][move[1]];
+
+                row.erase(std::remove(row.begin(), row.end(), num), row.end());
+                col.erase(std::remove(col.begin(), col.end(), num), col.end());
+            }
+
+            int subX = move[0] - (move[0] % 3);
+            int subY = move[1] - (move[1] % 3);
+
+            for (int j = 0; j < 3; ++j) {
+                for (int k = 0; k < 3; ++k) {
+                    std::string& sub = c[subX + j][subY + k];
+                    sub.erase(std::remove(sub.begin(), sub.end(), num), sub.end());
+                }
+            }
+
             c[move[0]][move[1]] = std::to_string(move[2]);
+
             ++attempts;
             ++numsPlaced;
             return 1;
